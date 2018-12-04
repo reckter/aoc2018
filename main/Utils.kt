@@ -3,18 +3,35 @@ package me.reckter.aoc
 import java.io.File
 import java.nio.file.Files
 import kotlin.reflect.full.createInstance
+import kotlin.system.measureNanoTime
 
+fun Long.logTime(soluion: String) {
+    val timeSString = when {
+        this > 1_000_000_000 -> "${this.toDouble() / 1_000_000_000.0}s"
+        this > 1_000_000 -> "${this.toDouble() / 1_000_000.0}ms"
+        this > 1_000 -> "${this.toDouble() / 1_000.0}μs"
+        else -> "${this}ns"
+    }
+    println("$soluion took: $timeSString")
+}
 inline fun <reified T : Day> solve(
     enablePartOne: Boolean = true,
     enablePartTwo: Boolean = true
 ) {
     val day = T::class.createInstance()
 
-    if (enablePartOne)
-        day.solvePart1()
+    val partOneNanos = if (enablePartOne) {
+        measureNanoTime { day.solvePart1() }
+    } else null
 
-    if (enablePartTwo)
-        day.solvePart2()
+    val partTwoNanos = if (enablePartTwo) {
+        measureNanoTime {  day.solvePart2() }
+    } else null
+
+    println()
+    partOneNanos?.logTime("solution 1")
+    partTwoNanos?.logTime("solution 2")
+
 }
 
 fun readLines(file: String): List<String> {
