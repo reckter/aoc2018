@@ -19,8 +19,8 @@ class Day2 : Day {
                     .distinctBy { it }
             }
             .groupBy { it }
-            .map { it.value.count().toLong()}
-            .fold(1L){ a, b -> a * b }
+            .map { it.value.count().toLong() }
+            .fold(1L) { a, b -> a * b }
             .solution(1)
     }
 

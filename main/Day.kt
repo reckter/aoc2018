@@ -12,7 +12,7 @@ interface Day {
 
     fun solvePart2()
 
-    fun loadInput(part: Int = 0): List<String> {
+    fun loadInput(part: Int = 0, trim: Boolean = true): List<String> {
 
         if (part != 0)
             return readLines("input/${day}_$part.txt")
@@ -36,5 +36,11 @@ interface Day {
         }
 
         return readLines("input/$day.txt")
+            .let {
+                if(trim) {
+                    it.filter { it.isNotBlank() }
+                } else
+                    it
+            }
     }
 }
