@@ -7,9 +7,9 @@ import me.reckter.aoc.solve
 class Day5 : Day {
     override val day = 5
 
-    fun collapse(it: String): String {
+    fun String.collapse(): String {
         return ('a'..'z')
-            .fold(it) {acc, cur ->
+            .fold(this) { acc, cur ->
                 acc.replace("$cur${cur.toUpperCase()}", "")
                     .replace("${cur.toUpperCase()}$cur", "")
             }
@@ -19,25 +19,26 @@ class Day5 : Day {
         var input = loadInput()
             .single()
 
-        input = fullyCollapse(input)
+        input = input.fullyCollapse()
 
         input.length.solution(1)
     }
 
-    private fun fullyCollapse(input: String): String {
-        var input1 = input
-        var newInput = input1
+    private fun String.fullyCollapse(): String {
+        var input = this
+        var newInput = input
 
         do {
-            input1 = newInput
-            newInput = collapse(input1)
-        } while (newInput.length != input1.length)
-        return input1
+            input = newInput
+            newInput = input.collapse()
+        } while (newInput.length != input.length)
+        return input
     }
 
     override fun solvePart2() {
         val input = loadInput()
             .single()
+            .fullyCollapse()
 
         ('a'..'z')
             .toList()
@@ -47,13 +48,12 @@ class Day5 : Day {
                 val tmp = input
                     .replace(it.toString(), "")
                     .replace(it.toString().toUpperCase(), "")
-                fullyCollapse(tmp).length
+                tmp.fullyCollapse().length
             }
             .mapToInt { it }
             .min()
             .orElseGet(null)
             .solution(2)
-
     }
 }
 
