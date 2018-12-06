@@ -104,3 +104,5 @@ fun hammingDistance(a: String, b: String) =
         .count { (a, b) -> a != b } +
             a.length - b.length
 
+
+val alphabet = ('a'..'z').toList()
