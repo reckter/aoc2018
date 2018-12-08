@@ -4,7 +4,6 @@ import me.reckter.aoc.Day
 import me.reckter.aoc.solution
 import me.reckter.aoc.solve
 import me.reckter.aoc.toIntegers
-import java.util.ArrayDeque
 
 class Day8 : Day {
     override val day = 8
@@ -14,60 +13,18 @@ class Day8 : Day {
             .single()
             .split(" ")
             .toIntegers()
-            .let {
-                val ret = ArrayDeque<Int>()
-                it.reversed().forEach { ret.push(it) }
-                ret
-            }
 
-        val stack = ArrayDeque<Node>()
-        var state = State.StartNode
-        var lastChild: Node?
+        var pos = 0
 
-        while (input.isNotEmpty()) {
-            state = when (state) {
-                State.StartNode -> {
-                    val newNode = Node(input.pop(), input.pop(), listOf(), listOf())
-                    stack.push(newNode)
-                    when {
-                        newNode.childrenCount != 0 -> State.StartNode
-                        newNode.metaDataCount != 0 -> State.MetaData
-                        else -> State.EndNode
-                    }
-                }
-                State.MetaData -> {
-                    val currentNode = stack.pop()
-                    val toSave = currentNode.copy(
-                        metaDataCount = currentNode.metaDataCount - 1,
-                        metaData = currentNode.metaData + input.pop()
-                    )
-                    stack.push(toSave)
-                    when {
-                        toSave.metaDataCount != 0 -> State.MetaData
-                        else -> State.EndNode
-                    }
-                }
-                State.EndNode -> {
-                    lastChild = stack.pop()
-
-                    val parent = stack.pop()
-                    val toSave = parent.copy(
-                        childrenCount = parent.childrenCount - 1,
-                        children = parent.children + lastChild!!
-                    )
-
-                    stack.push(toSave)
-
-                    when {
-                        toSave.childrenCount != 0 -> State.StartNode
-                        toSave.metaDataCount != 0 -> State.MetaData
-                        else -> State.EndNode
-                    }
-                }
-            }
+        fun parseNode(): Node {
+            val childrenCount = input[pos++]
+            val metaCount = input[pos++]
+            return Node(
+                children = (0 until childrenCount).map { parseNode() },
+                metaData = (0 until metaCount).map { input[pos++] }
+            )
         }
-
-        stack.pop()
+         parseNode()
     }
 
     override fun solvePart1() {
@@ -93,15 +50,7 @@ class Day8 : Day {
                 .sumBy { score(it) }
         }
 
-    enum class State {
-        StartNode,
-        MetaData,
-        EndNode
-    }
-
     data class Node(
-        val childrenCount: Int,
-        val metaDataCount: Int,
         val metaData: List<Int>,
         val children: List<Node>
     ) {
