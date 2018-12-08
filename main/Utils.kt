@@ -106,3 +106,9 @@ fun hammingDistance(a: String, b: String) =
 
 
 val alphabet = ('a'..'z').toList()
+
+val alphabetString = alphabet.joinToString("")
+
+val uppercaseAlphabet = alphabet.map(Char::toUpperCase)
+val uppercaseAlphabetString = uppercaseAlphabet.joinToString("")
+
