@@ -2,18 +2,20 @@ package me.reckter.aoc
 
 import java.io.File
 import java.nio.file.Files
+import java.util.LinkedList
 import kotlin.reflect.full.createInstance
 import kotlin.system.measureNanoTime
 
 fun Long.logTime(soluion: String) {
-    val timeSString = when {
+    val timeString = when {
         this > 1_000_000_000 -> "${this.toDouble() / 1_000_000_000.0}s"
         this > 1_000_000 -> "${this.toDouble() / 1_000_000.0}ms"
         this > 1_000 -> "${this.toDouble() / 1_000.0}μs"
         else -> "${this}ns"
     }
-    println("$soluion took: $timeSString")
+    println("$soluion took: $timeString")
 }
+
 inline fun <reified T : Day> solve(
     enablePartOne: Boolean = true,
     enablePartTwo: Boolean = true
@@ -25,13 +27,12 @@ inline fun <reified T : Day> solve(
     } else null
 
     val partTwoNanos = if (enablePartTwo) {
-        measureNanoTime {  day.solvePart2() }
+        measureNanoTime { day.solvePart2() }
     } else null
 
     println()
     partOneNanos?.logTime("solution 1")
     partTwoNanos?.logTime("solution 2")
-
 }
 
 fun readLines(file: String): List<String> {
@@ -104,9 +105,21 @@ fun hammingDistance(a: String, b: String) =
         .count { (a, b) -> a != b } +
             a.length - b.length
 
+fun <E> LinkedList<E>.rotate(by: Int) {
+    when {
+        by < 0 ->
+            repeat(-by) {
+                this.addFirst(this.removeLast())
+
+            }
+        by > 0 ->
+            repeat(by) {
+                this.addLast(this.removeFirst())
+            }
+    }
+}
 
 val alphabet = ('a'..'z').toList()
-
 val alphabetString = alphabet.joinToString("")
 
 val uppercaseAlphabet = alphabet.map(Char::toUpperCase)
