@@ -1,6 +1,7 @@
 package me.reckter.aoc
 
 import java.io.File
+import java.math.RoundingMode
 import java.nio.file.Files
 import java.util.LinkedList
 import kotlin.reflect.full.createInstance
@@ -8,13 +9,15 @@ import kotlin.system.measureNanoTime
 
 fun Long.logTime(soluion: String) {
     val timeString = when {
-        this > 1_000_000_000 -> "${this.toDouble() / 1_000_000_000.0}s"
-        this > 1_000_000 -> "${this.toDouble() / 1_000_000.0}ms"
-        this > 1_000 -> "${this.toDouble() / 1_000.0}μs"
+        this > 1_000_000_000 -> "${(this.toDouble() / 1_000_000_000.0).scale(3)}s"
+        this > 1_000_000 -> "${(this.toDouble() / 1_000_000.0).scale(3)}ms"
+        this > 1_000 -> "${(this.toDouble() / 1_000.0).scale(3)}μs"
         else -> "${this}ns"
     }
     println("$soluion took: $timeString")
 }
+
+private fun Double.scale(scale: Int) = this.toBigDecimal().setScale(scale, RoundingMode.HALF_UP).toString()
 
 inline fun <reified T : Day> solve(
     enablePartOne: Boolean = true,

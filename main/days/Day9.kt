@@ -1,10 +1,9 @@
 package me.reckter.aoc.days
 
 import me.reckter.aoc.Day
-import me.reckter.aoc.rotate
 import me.reckter.aoc.solution
 import me.reckter.aoc.solve
-import java.util.LinkedList
+import org.magicwerk.brownies.collections.BigList
 
 class Day9 : Day {
     override val day = 9
@@ -28,9 +27,10 @@ class Day9 : Day {
 
     fun play(players: Int, marbles: Int): MutableMap<Int, MutableList<Int>> {
         var marbleToPlace = 3
+        var currentMarble = 1
         var currentPlayer = 3
 
-        val circle = LinkedList(listOf(2, 1, 0))
+        val circle = BigList(listOf(2, 1, 0))
 
         val scores = mutableMapOf<Int, MutableList<Int>>()
 
@@ -39,28 +39,39 @@ class Day9 : Day {
                 val score = scores.getOrDefault(currentPlayer, mutableListOf())
                 score.add(marbleToPlace)
 
-                circle.rotate(-7)
+                currentMarble = (currentMarble - 7) posMod circle.size
 
-                score.add(circle.first)
-                circle.removeFirst()
+                score.add(circle[currentMarble])
+                circle.removeAt(currentMarble)
 
                 scores[currentPlayer] = score
 
                 marbleToPlace++
-                currentPlayer = (currentPlayer + 1) % players
+                currentPlayer = (currentPlayer + 1) posMod players
             } else {
-                circle.rotate(2)
-                circle.addFirst(marbleToPlace)
+                currentMarble =
+                        if (currentMarble + 2 > circle.size)
+                            (currentMarble + 3) posMod (circle.size + 1)
+                        else
+                            (currentMarble + 2) posMod (circle.size + 1)
 
+                circle.add(currentMarble, marbleToPlace)
                 marbleToPlace++
-                currentPlayer = (currentPlayer + 1) % players
+                currentPlayer = (currentPlayer + 1) posMod players
             }
         }
 
         return scores
     }
 
-    fun playAndScore(players: Int, marbles: Int) =
+    infix fun Int.posMod(mod: Int): Int {
+        val ret = this % mod
+        if (ret < 0)
+            return ret + mod
+        return ret
+    }
+
+    fun playAndScore(players: Int, marbles: Int)=
         play(players, marbles)
             .map { it.key to it.value.map { it.toLong() }.sum() }
             .maxBy { it.second }
