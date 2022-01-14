@@ -24,22 +24,22 @@ class Day6 : Day {
 
         val minX = points
             .map { it.x }
-            .min()
+            .minOrNull()
             ?: error("lol")
 
         val maxX = points
             .map { it.x }
-            .max()
+            .maxOrNull()
             ?: error("lol")
 
         val minY = points
             .map { it.y }
-            .min()
+            .minOrNull()
             ?: error("lol")
 
         val maxY = points
             .map { it.y }
-            .max()
+            .maxOrNull()
             ?: error("lol")
 
         (minX..maxX).flatMap { x ->
@@ -59,7 +59,7 @@ class Day6 : Day {
                 .groupBy {
                     Math.abs(it.x - point.x) + Math.abs(it.y - point.y)
                 }
-                .minBy { it.key }
+                .minByOrNull { it.key }
                 ?.value
                 .orEmpty()
 
@@ -79,7 +79,7 @@ class Day6 : Day {
             .filter { (key, values) ->
                 rim.none { it == key }
             }
-            .maxBy { it.value.count() }
+            .maxByOrNull { it.value.count() }
             ?.value
             ?.count()
             .solution(1)
@@ -106,23 +106,18 @@ class Day6 : Day {
     fun <E : Any> Map<Pair<Int, Int>, E>.getRim(): List<E> {
         val points = this.keys
         val minX = points
-            .map { it.first }
-            .min()
+            .minOfOrNull { it.first }
             ?: error("lol")
 
         val maxX = points
-            .map { it.first }
-            .max()
+            .maxOfOrNull { it.first }
             ?: error("lol")
 
         val minY = points
-            .map { it.second }
-            .min()
-            ?: error("lol")
+            .minOf { it.second }
 
         val maxY = points
-            .map { it.second }
-            .max()
+            .maxOf { it.second }
             ?: error("lol")
 
         val xRim = (minX..maxX).flatMap { x ->

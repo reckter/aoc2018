@@ -74,8 +74,7 @@ class Day9 : Day {
     fun playAndScore(players: Int, marbles: Int)=
         play(players, marbles)
             .map { it.key to it.value.map { it.toLong() }.sum() }
-            .maxBy { it.second }
-            ?.second
+            .maxOf { it.second }
 
     override fun solvePart1() {
         playAndScore(players, marbles)

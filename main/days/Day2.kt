@@ -2,6 +2,7 @@ package me.reckter.aoc.days
 
 import me.reckter.aoc.Day
 import me.reckter.aoc.allCombinations
+import me.reckter.aoc.allPairings
 import me.reckter.aoc.hammingDistance
 import me.reckter.aoc.solution
 import me.reckter.aoc.solve
@@ -26,7 +27,7 @@ class Day2 : Day {
 
     override fun solvePart2() {
         loadInput()
-            .allCombinations(bothDirections = false)
+            .allPairings(bothDirections = false)
             .asStream()
             .parallel()
             .filter { hammingDistance(it.first, it.second) == 1 }

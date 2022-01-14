@@ -63,7 +63,7 @@ class Day4 : Day {
     }
 
     fun List<Pair<Int, List<Asleep>>>.findMaxDay(): Int {
-        return (0..59).maxBy { minute ->
+        return (0..59).maxByOrNull { minute ->
             val time = LocalTime.of(0, minute)
             this.flatMap { it.second }
                 .count {
@@ -90,7 +90,7 @@ class Day4 : Day {
     override fun solvePart1() {
         guardDayMap
             .toList()
-            .maxBy { (id, values) ->
+            .maxByOrNull { (id, values) ->
                 values.sumBy { (day, asleeps) ->
                     asleeps.sumBy { it.from.until(it.until, ChronoUnit.MINUTES).toInt() }
                 }
@@ -102,7 +102,7 @@ class Day4 : Day {
     override fun solvePart2() {
         guardDayMap
             .toList()
-            .maxBy { (_, values) ->
+            .maxByOrNull { (_, values) ->
                 val minute = values.findMaxDay()
                 values.getUsageOfMinute(minute)
             }

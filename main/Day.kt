@@ -1,9 +1,11 @@
 package me.reckter.aoc
 
-import khttp.get
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import java.io.File
 import java.nio.file.Files
 
+val client = OkHttpClient()
 interface Day {
 
     val day: Int
@@ -13,6 +15,10 @@ interface Day {
     fun solvePart2()
 
     fun loadInput(part: Int = 0, trim: Boolean = true): List<String> {
+
+        if (!File("input").exists()) {
+            File("input").mkdir()
+        }
 
         if (part != 0)
             return readLines("input/${day}_$part.txt")
@@ -25,19 +31,24 @@ interface Day {
                 error("input not there and could not download file, because session-id.txt is missing!")
             }
 
-            val response = get(
-                url = "http://adventofcode.com/2018/day/$day/input",
-                cookies = mapOf("session" to sessionFile.readText())
-            )
+            val req = Request.Builder()
+                .url("https://adventofcode.com/2018/day/$day/input")
+                .addHeader("cookie", "session=${sessionFile.readText().trim()}")
+                .build()
+            val res = client.newCall(req).execute()
 
-            val content = response.text
+            if (!res.isSuccessful) {
+                error("Failed to download part=$part!: ${res.body?.string()}")
+            }
+
+            val content = res.body?.string() ?: error("Got null response")
             File("input/$day.txt").writeText(content)
             println("download done")
         }
 
         return readLines("input/$day.txt")
             .let {
-                if(trim) {
+                if (trim) {
                     it.filter { it.isNotBlank() }
                 } else
                     it

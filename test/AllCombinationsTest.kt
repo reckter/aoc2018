@@ -30,7 +30,7 @@ class AllCombinationsTest {
     fun `should spit out all combinations including the same element`() {
         val start = listOf(1,2,3)
 
-        val combis = start.allCombinations(includeSelf = true)
+        val combis = start.allPairings(includeSelf = true)
             .toList()
 
         assertTrue {
@@ -54,7 +54,7 @@ class AllCombinationsTest {
     fun `should spit out all combinations including the same element, bot only once`() {
         val start = listOf(1,2,3)
 
-        val combis = start.allCombinations(includeSelf = true, bothDirections = false)
+        val combis = start.allPairings(includeSelf = true, bothDirections = false)
             .toList()
 
         assertTrue {
@@ -74,7 +74,7 @@ class AllCombinationsTest {
     fun `should spit out all combinations bot only once`() {
         val start = listOf(1,2,3)
 
-        val combis = start.allCombinations(bothDirections = false)
+        val combis = start.allPairings(bothDirections = false)
             .toList()
 
         assertTrue {

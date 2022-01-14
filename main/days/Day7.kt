@@ -114,7 +114,7 @@ class Day7 : Day {
                 ?: return@map 0
 
             startTime + fixedTime + uppercaseAlphabetString.indexOf(step.name) + 1
-        }.max()
+        }.maxOrNull()
 
         endTime.solution(2)
     }
